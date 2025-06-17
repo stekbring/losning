@@ -2,6 +2,7 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lös Skattjaktskoden</title>
   <style>
     body {
@@ -9,17 +10,27 @@
       color: white;
       font-family: sans-serif;
       text-align: center;
-      padding: 50px;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
     h1 {
-      font-size: 40px;
-      margin-bottom: 30px;
+      font-size: 60px;
+      margin-bottom: 70px;
+      padding: 0 20px;
     }
     .input-grid {
       display: grid;
-      grid-template-columns: repeat(8, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 15px;
       margin-bottom: 30px;
+      padding: 0 20px;
+      max-width: 400px;
+      justify-content: center;
     }
     .input-box {
       display: flex;
@@ -28,26 +39,24 @@
     }
     .input-box input {
       padding: 10px;
-      font-size: 20px;
+      font-size: 25px;
       text-align: center;
-      width: 100px;
+      width: 120px;
       border-radius: 6px;
       border: none;
-    }
-    .underscore {
-      margin-top: 10px;
-      height: 3px;
-      width: 80px;
       background-color: white;
+      color: black;
     }
     #result {
-      font-size: 24px;
-      margin-top: 30px;
+      font-size: 30px;
+      margin-top: 50px;
+      padding: 0 20px;
       word-break: break-word;
     }
     button {
-      padding: 15px 30px;
-      font-size: 20px;
+      padding: 12px 24px;
+      font-size: 25px;
+      margin-top: 50px ;
       background-color: #555656;
       color: white;
       border: none;
@@ -62,15 +71,14 @@
 <body>
   <h1>Lös Skattjaktskoden</h1>
   <div class="input-grid">
-    <!-- Skapar 8 stycken rutor för användarinmatning -->
-    <div class="input-box"><input id="input1" /><div class="underscore"></div></div>
-    <div class="input-box"><input id="input2" /><div class="underscore"></div></div>
-    <div class="input-box"><input id="input3" /><div class="underscore"></div></div>
-    <div class="input-box"><input id="input4" /><div class="underscore"></div></div>
-    <div class="input-box"><input id="input5" /><div class="underscore"></div></div>
-    <div class="input-box"><input id="input6" /><div class="underscore"></div></div>
-    <div class="input-box"><input id="input7" /><div class="underscore"></div></div>
-    <div class="input-box"><input id="input8" /><div class="underscore"></div></div>
+    <div class="input-box"><input id="input1" /></div>
+    <div class="input-box"><input id="input2" /></div>
+    <div class="input-box"><input id="input3" /></div>
+    <div class="input-box"><input id="input4" /></div>
+    <div class="input-box"><input id="input5" /></div>
+    <div class="input-box"><input id="input6" /></div>
+    <div class="input-box"><input id="input7" /></div>
+    <div class="input-box"><input id="input8" /></div>
   </div>
 
   <button onclick="rata()">Rätta</button>
@@ -78,43 +86,52 @@
   <div id="result"></div>
 
   <script>
-    // Rätt svar för varje ruta 1 till 8
     const svar = [
-      "koordinat", // input1
-      "kompass",   // input2
-      "norr",      // input3
-      "karta",      // input4
-      "skatt",      // input5
-      "xmark",      // input6
-      "gps",        // input7
-      "ledtrad"     // input8
+      "koordinat",
+      "kompass",
+      "norrsken",
+      "kartblad",
+      "skattkista",
+      "xmarkering",
+      "gpsmottagare",
+      "ledtradar"
     ];
 
-    // Lösningens delar, uppdelat som 8 block om 4 tecken vardera
-    const losning = "57°20'46.1\"N 15°13'53.7\"E";
+    const losningsbitar = [
+      "57°",
+      "20'",
+      "46.1",
+      "N ",
+      "15°",
+      "13'",
+      "53.7",
+      "E"
+    ];
 
     function rata() {
       const inputs = [];
-
-      // Hämtar inmatningarna från input1 till input8
       for (let i = 1; i <= 8; i++) {
         const val = document.getElementById("input" + i).value.trim().toLowerCase();
         inputs.push(val);
       }
 
       let reveal = "";
+      let allCorrect = true;
 
-      // Delar upp lösningen i block om 4 tecken för varje korrekt svar
       for (let i = 0; i < 8; i++) {
         if (inputs[i] === svar[i]) {
-          reveal += losning.slice(i * 4, i * 4 + 4); // Om korrekt: visa del av lösningen
+          reveal += losningsbitar[i];
         } else {
-          reveal += "____"; // Om fel: visa understreck
+          reveal += "____ ";
+          allCorrect = false;
         }
       }
 
-      // Skriver ut den kombinerade strängen med korrekta delar synliga
-      document.getElementById("result").textContent = reveal;
+      if (allCorrect) {
+        document.getElementById("result").textContent = reveal.trim();
+      } else {
+        document.getElementById("result").textContent = reveal.trim();
+      }
     }
   </script>
 </body>
