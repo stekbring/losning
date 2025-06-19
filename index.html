@@ -54,6 +54,12 @@
       padding: 0 20px;
       word-break: break-word;
     }
+    #word {
+      font-size: 32px;
+      margin-top: 40px;
+      font-weight: bold;
+      letter-spacing: 3px;
+    }
     button {
       padding: 12px 24px;
       font-size: 30px;
@@ -85,54 +91,57 @@
   <button onclick="rata()">Rätta</button>
 
   <div id="result"></div>
+  <div id="word"></div>
 
   <script>
     const svar = [
-      "koordinat",
-      "kompass",
-      "norrsken",
-      "kartblad",
-      "skattkista",
-      "xmarkering",
-      "gpsmottagare",
-      "ledtradar"
+      "k",
+      "k",
+      "n",
+      "k",
+      "s",
+      "x",
+      "g",
+      "l"
     ];
 
     const losningsbitar = [
       "57°",
       "20'",
       "46",
-      ".1 N ",
-      "15°",
-      "13'",
-      "53",
-      ".7 E"
+      ".1 S ",
+      "164°",
+      "46'",
+      "6",
+      ".3 W"
     ];
+
+    const hemligtOrd = "Antipod!";
 
     function rata() {
       const inputs = [];
+      let reveal = "";
+      let bokstavsOrd = "";
+      let antalRatt = 0;
+
       for (let i = 1; i <= 8; i++) {
         const val = document.getElementById("input" + i).value.trim().toLowerCase();
         inputs.push(val);
       }
 
-      let reveal = "";
-      let allCorrect = true;
-
       for (let i = 0; i < 8; i++) {
         if (inputs[i] === svar[i]) {
-          reveal += losningsbitar[i];
+          reveal += losningsbitar[i] + " ";
+          bokstavsOrd += hemligtOrd[i];
+          antalRatt++;
         } else {
           reveal += "____ ";
-          allCorrect = false;
+          bokstavsOrd += "_";
         }
       }
 
-      if (allCorrect) {
-        document.getElementById("result").textContent = reveal.trim();
-      } else {
-        document.getElementById("result").textContent = reveal.trim();
-      }
+      document.getElementById("result").textContent = reveal.trim();
+      document.getElementById("word").textContent = bokstavsOrd;
     }
   </script>
 </body>
