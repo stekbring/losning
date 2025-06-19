@@ -42,11 +42,16 @@
       font-size: 15px;
       text-align: center;
       width: 60px;
-      height: 10px;
+      height: 20px; /* ändrat lite för bättre inputhöjd */
       border-radius: 3px;
       border: none;
       background-color: white;
       color: black;
+    }
+    /* Stil för placeholder-texten */
+    .input-box input::placeholder {
+      color: #999999;
+      font-size: 18px;
     }
     #result {
       font-size: 20px;
@@ -78,14 +83,14 @@
 <body>
   <h1>Lös Skattjaktskoden</h1>
   <div class="input-grid">
-    <div class="input-box"><input id="input1" /></div>
-    <div class="input-box"><input id="input2" /></div>
-    <div class="input-box"><input id="input3" /></div>
-    <div class="input-box"><input id="input4" /></div>
-    <div class="input-box"><input id="input5" /></div>
-    <div class="input-box"><input id="input6" /></div>
-    <div class="input-box"><input id="input7" /></div>
-    <div class="input-box"><input id="input8" /></div>
+    <div class="input-box"><input id="input1" placeholder="1" maxlength="1" /></div>
+    <div class="input-box"><input id="input2" placeholder="2" maxlength="1" /></div>
+    <div class="input-box"><input id="input3" placeholder="3" maxlength="1" /></div>
+    <div class="input-box"><input id="input4" placeholder="4" maxlength="1" /></div>
+    <div class="input-box"><input id="input5" placeholder="5" maxlength="1" /></div>
+    <div class="input-box"><input id="input6" placeholder="6" maxlength="1" /></div>
+    <div class="input-box"><input id="input7" placeholder="7" maxlength="1" /></div>
+    <div class="input-box"><input id="input8" placeholder="8" maxlength="1" /></div>
   </div>
 
   <button onclick="rata()">Rätta</button>
@@ -118,11 +123,62 @@
 
     const hemligtOrd = "Antipod!";
 
+    // Funktion för att spara inputs till localStorage när de ändras
+    function saveInputs() {
+      const inputs = [];
+      for (let i = 1; i <= 8; i++) {
+        const val = document.getElementById("input" + i).value.trim();
+        inputs.push(val);
+      }
+      localStorage.setItem("skattjaktInputs", JSON.stringify(inputs));
+    }
+
+    // Funktion för att ladda inputs från localStorage
+    function loadInputs() {
+      const savedInputs = JSON.parse(localStorage.getItem("skattjaktInputs"));
+      if (savedInputs && savedInputs.length === 8) {
+        for (let i = 1; i <= 8; i++) {
+          document.getElementById("input" + i).value = savedInputs[i - 1];
+        }
+      }
+    }
+
+    // Funktion för att spara resultatet till localStorage
+    function saveResult(resultText, wordText) {
+      localStorage.setItem("skattjaktResult", resultText);
+      localStorage.setItem("skattjaktWord", wordText);
+    }
+
+    // Funktion för att ladda resultat från localStorage
+    function loadResult() {
+      const resultText = localStorage.getItem("skattjaktResult");
+      const wordText = localStorage.getItem("skattjaktWord");
+      if (resultText) {
+        document.getElementById("result").textContent = resultText;
+      }
+      if (wordText) {
+        document.getElementById("word").textContent = wordText;
+      }
+    }
+
+    // Använd load-funktionerna när sidan laddas
+    window.onload = () => {
+      loadInputs();
+      loadResult();
+    };
+
+    // Lägg till event listeners för att spara automatiskt när användaren skriver i inputfälten
+    for (let i = 1; i <= 8; i++) {
+      document.getElementById("input" + i).addEventListener("input", () => {
+        saveInputs();
+      });
+    }
+
+    // Uppdaterad rata-funktion som sparar resultatet
     function rata() {
       const inputs = [];
       let reveal = "";
       let bokstavsOrd = "";
-      let antalRatt = 0;
 
       for (let i = 1; i <= 8; i++) {
         const val = document.getElementById("input" + i).value.trim().toLowerCase();
@@ -133,7 +189,6 @@
         if (inputs[i] === svar[i]) {
           reveal += losningsbitar[i] + " ";
           bokstavsOrd += hemligtOrd[i];
-          antalRatt++;
         } else {
           reveal += "____ ";
           bokstavsOrd += "_";
@@ -142,6 +197,9 @@
 
       document.getElementById("result").textContent = reveal.trim();
       document.getElementById("word").textContent = bokstavsOrd;
+
+      // Spara resultatet
+      saveResult(reveal.trim(), bokstavsOrd);
     }
   </script>
 </body>
